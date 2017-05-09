@@ -24,10 +24,10 @@ from pprint import pprint
 #     console.log($(a[i]).isVisible());
 # }
 
-os = None
+osversion = None
 
 if platform.system() == "Windows":
-    os = "windows"
+    osversion = "windows"
     print 'Killing all chrome instances'
     subprocess.Popen('TASKKILL /IM chrome.exe /F')
     time.sleep(1)
@@ -35,11 +35,13 @@ if platform.system() == "Windows":
     print 'opening chrome with permissions'
     subprocess.Popen(chromedir)
     print 'chrome open'
+
 elif platform.system() == "Darwin":
-    os = "mac"
+    osversion = "mac"
     os.system("pkill Chrome")
     time.sleep(2)
     os.system("open /Applications/Google\ Chrome.app --args --remote-debugging-port=9222")
+    time.sleep(2)
 else:
     print "OS not supported"
 # If you want to open a video, just change this path
@@ -78,7 +80,6 @@ function returnObj(a) {
          c = [];
          c[0] = a[i]
          c[1] = $(a[i]).isVisible()
-         c[2] = false
          b[i] = c;
  }
     return b;
@@ -98,6 +99,7 @@ for (i=0;i<a.length;i++){
 
 print "Please enable JQuery injection and then press OK!"
 tab.evaluate('window.confirm("Please inject jQuery and then press OK");')
+time.sleep(2)
 
 try:
     tab.evaluate(isvisiblefn)
@@ -113,9 +115,9 @@ obj = json.loads(json_string)
 
 if obj["result"]["result"]["value"] != "function":
     print "JQuery was not injected... Exiting"
-    if os == "mac":
+    if osversion == "mac":
         os.system("pkill Chrome")
-    elif os == "windows":
+    elif osversion == "windows":
         subprocess.Popen('TASKKILL /IM chrome.exe /F')
     raise SystemExit
 
@@ -161,8 +163,10 @@ while(True):
         // console.log()
     	// console.log(z[i][1]);
     	if (z[i][1] == true && $(z[i][0]).attr("data-testid") == "fb-ufi-likelink"){
-            z[i][2] = true;
             z[i][0].click();
+            console.log("Clicking on next sibling")
+            console.log(z[i][0].nextSibling)
+            z[i][0].nextSibling.click()
         }
     }
     ''')
@@ -268,7 +272,7 @@ while(True):
     # Display the resulting frame
     cv2.imshow('Detector de circulos',frame)
     # print("No circles were found")
-    if cv2.waitKey(25) & 0xFF == ord('q'):
+    if cv2.waitKey(50) & 0xFF == ord('q'):
         break
 
     # Dizer a distancia
