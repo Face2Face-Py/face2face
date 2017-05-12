@@ -59,15 +59,15 @@ function clickReaction(btnindex,reaction){
       z[i][0][reactkey].onMouseLeave();
     }
 
-    if (btns.length == 6){
+    if (btns.length == 7){
       reactions.push(btns);
-    } else if (btns.length == 12){
-      reactions.push(btns.slice(0,6));
-      reactions.push(btns.slice(6,12));
+    } else if (btns.length == 14){
+      reactions.push(btns.slice(0,7));
+      reactions.push(btns.slice(7,14));
     } else {
-      reactions.push(btns.slice(0,6));
-      reactions.push(btns.slice(6,12));
-      reactions.push(btns.slice(12,18));
+      reactions.push(btns.slice(0,7));
+      reactions.push(btns.slice(7,14));
+      reactions.push(btns.slice(14,21));
     }
 
     // finally clicks
@@ -75,14 +75,16 @@ function clickReaction(btnindex,reaction){
       ri = 0;
     } else if (reaction == "amei"){
       ri = 1;
-    } else if (reaction == "haha"){
+    } else if (reaction == "gratidao"){
       ri = 2;
-    } else if (reaction == "uau"){
+    } else if (reaction == "haha"){
       ri = 3;
-    } else if (reaction == "triste"){
+    } else if (reaction == "uau"){
       ri = 4;
-    } else if (reaction == "grr"){
+    } else if (reaction == "triste"){
       ri = 5;
+    } else if (reaction == "grr"){
+      ri = 6;
     } else {
       console.log("Invalid reaction");
     }
