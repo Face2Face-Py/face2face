@@ -1,3 +1,8 @@
+$( document ).ready(function() {
+    console.log( "ready!" );
+});
+
+
 function returnObj(a) {
      b = [];
      for (i=0;i<a.length;i++){
@@ -21,6 +26,8 @@ $.fn.isVisible = function() {
     );
 };
 
+
+
 var reactions = [];
 var spanlist = [];
 var btns = [];
@@ -43,21 +50,28 @@ function clickReaction(btnindex,reaction){
     z[i][0][reactkey].onMouseEnter();
   }
 
+  console.log(z);
+
   btns = [];
   reactions = [];
 
   setTimeout(function(){
 
+
     spanlist = $("._iuw:visible");
+    // console.log(spanlist);
+
     for (i=0;i<spanlist.length;i++){
-      if ($(spanlist[i]).isVisible()){
+
+      if ($(spanlist[i]).first().isVisible()){
+        // console.log("O seguinte botão é visivel");
+        // console.log($(spanlist[i]).first());
         btns.push(spanlist[i]);
       }
     }
 
-    for (i=0;i<z.length;i++){
-      z[i][0][reactkey].onMouseLeave();
-    }
+    // console.log("botoes validos:")
+    // console.log(btns);
 
     if (btns.length == 7){
       reactions.push(btns);
@@ -69,6 +83,16 @@ function clickReaction(btnindex,reaction){
       reactions.push(btns.slice(7,14));
       reactions.push(btns.slice(14,21));
     }
+
+    // if (z.length == 1){
+    //   reactions.splice(0,1)
+    // } else if (z.length == 2){
+    //
+    // } else {
+    //
+    // }
+    console.log("botões encontrados:");
+    console.log(reactions);
 
     // finally clicks
     if (reaction == "curtir"){
@@ -91,5 +115,15 @@ function clickReaction(btnindex,reaction){
     console.log("Clicking on button "+btnindex+" on the reaction "+reaction );
     reactions[btnindex][ri].click();
 
+    setTimeout(function(){
+      for (i=0;i<z.length;i++){
+      z[i][0][reactkey].onMouseLeave();
+      }
+    },100);
+
+
   },600);
+
+
+
 };
