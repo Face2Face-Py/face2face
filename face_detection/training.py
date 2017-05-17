@@ -2,8 +2,11 @@ import cv2
 import glob
 import random
 import numpy as np
+import pickle
 
+#emotions = ["neutral", "anger", "disgust", "happy", "surprise"] #Emotion list
 emotions = ["neutral", "anger", "contempt", "disgust", "fear", "happy", "sadness", "surprise"] #Emotion list
+
 fishface = cv2.face.createFisherFaceRecognizer() #Initialize fisher face classifier
 
 data = {}
@@ -43,6 +46,7 @@ def run_recognizer():
     print "training fisher face classifier"
     print "size of training set is:", len(training_labels), "images"
     fishface.train(training_data, np.asarray(training_labels))
+    #salvar fishface com o pickle
 
     print "predicting classification set"
     cnt = 0
@@ -58,11 +62,18 @@ def run_recognizer():
             cnt += 1
     return ((100*correct)/(correct + incorrect))
 
-#Now run it
-metascore = []
-for i in range(0,10):
-    correct = run_recognizer()
-    print "got", correct, "percent correct!"
-    metascore.append(correct)
+correct = run_recognizer()
 
-print "\n\nend score:", np.mean(metascore), "percent correct!"
+fishface.save('training')
+
+#with open('fishface', 'wb') as training:
+#    pickle.dump(fishface, training, pickle.HIGHEST_PROTOCOL)
+
+#Now run it
+#metascore = []
+#for i in range(0,10):
+    # correct = run_recognizer()
+    # print "got", correct, "percent correct!"
+    # metascore.append(correct)
+
+print "\n\nend score:", correct, "percent correct!"
