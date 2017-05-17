@@ -26,63 +26,95 @@ $.fn.isVisible = function() {
     );
 };
 
-
-
 var reactions = [];
 var spanlist = [];
 var btns = [];
 var z = [];
 
-function countVisible(){
-  z = returnObj($('a.UFILikeLink._4x9-._4x9_:visible'));
+function onPageLoaded(){
+  console.log("injecting custom css class");
+  $("<style type='text/css'> .selected { border-color:#3b5998 !important; border-width:thick !important} </style>").appendTo("head");
+// $("<div/>").addClass("selected").text("SOME NEW TEXT").appendTo("body");
+}
+
+function showSelected(){
   visible_count = 0;
-  for (i=0;i<z.length;i++){
-    visible_count ++;
+  y = returnObj($('._4-u2.mbm._4mrt._5v3q._4-u8'));
+
+  // $(y).removeClass("selected");
+
+  $(y[1]).addClass("selected");
+
+  try {
+    $(y[0]).removeClass("selected");
+    $(y[2]).removeClass("selected");
+  } catch(err) {
+    console.log("Error when catching post index");
   }
+
   return visible_count;
 }
 
-function clickReaction(btnindex,reaction){
+function clickReaction(reaction){
   z = returnObj($('a.UFILikeLink._4x9-._4x9_:visible'));
   btns = [];
-  for (i=0;i<z.length;i++){
-    reactkey = Object.keys(z[i][0])[1];
-    z[i][0][reactkey].onMouseEnter();
+
+  y = returnObj($('._4-u2.mbm._4mrt._5v3q._4-u8'));
+
+  // $(y).removeClass("selected");
+
+  $(y[1]).addClass("selected");
+
+  try{
+    $(y[0]).removeClass("selected");
+    $(y[2]).removeClass("selected");
+  } catch(err){
+    console.log("Error when catching post index");
   }
 
-  console.log(z);
+  btn =  $(y[1]).find(".UFILikeLink._4x9-._4x9_");
+  btnreactkey = Object.keys(btn[0])[1];
+  // console.log(btn);
+  // console.log(btnreactkey);
+  
+  btn[0][btnreactkey].onMouseEnter();
+
+  // for (i=0;i<z.length;i++){
+  //   reactkey = Object.keys(z[i][0])[1];
+  //   z[i][0][reactkey].onMouseEnter();
+  // }
+
+  // console.log(z);
 
   btns = [];
   reactions = [];
 
   setTimeout(function(){
 
-
-    spanlist = $("._iuw:visible");
+    spanlist = returnObj($("._iuw:visible"));
     // console.log(spanlist);
+    // for (i=0;i<spanlist.length;i++){
 
-    for (i=0;i<spanlist.length;i++){
+    //   if ($(spanlist[i]).first().isVisible()){
+    //     // console.log("O seguinte botão é visivel");
+    //     // console.log($(spanlist[i]).first());
+    //     btns.push(spanlist[i]);
+    //   }
+    // }
 
-      if ($(spanlist[i]).first().isVisible()){
-        // console.log("O seguinte botão é visivel");
-        // console.log($(spanlist[i]).first());
-        btns.push(spanlist[i]);
-      }
-    }
+    // // console.log("botoes validos:")
+    // // console.log(btns);
 
-    // console.log("botoes validos:")
-    // console.log(btns);
-
-    if (btns.length == 7){
-      reactions.push(btns);
-    } else if (btns.length == 14){
-      reactions.push(btns.slice(0,7));
-      reactions.push(btns.slice(7,14));
-    } else {
-      reactions.push(btns.slice(0,7));
-      reactions.push(btns.slice(7,14));
-      reactions.push(btns.slice(14,21));
-    }
+    // if (btns.length == 7){
+    //   reactions.push(btns);
+    // } else if (btns.length == 14){
+    //   reactions.push(btns.slice(0,7));
+    //   reactions.push(btns.slice(7,14));
+    // } else {
+    //   reactions.push(btns.slice(0,7));
+    //   reactions.push(btns.slice(7,14));
+    //   reactions.push(btns.slice(14,21));
+    // }
 
     // if (z.length == 1){
     //   reactions.splice(0,1)
@@ -91,8 +123,8 @@ function clickReaction(btnindex,reaction){
     // } else {
     //
     // }
-    console.log("botões encontrados:");
-    console.log(reactions);
+    // console.log("botões encontrados:");
+    // console.log(reactions);
 
     // finally clicks
     if (reaction == "curtir"){
@@ -112,18 +144,20 @@ function clickReaction(btnindex,reaction){
     } else {
       console.log("Invalid reaction");
     }
-    console.log("Clicking on button "+btnindex+" on the reaction "+reaction );
-    reactions[btnindex][ri].click();
+    console.log("Clicking on the reaction "+reaction );
 
+    // if ( btn[0].getAttribute("aria-pressed") == 'false'){
+    spanlist[ri][0].click();
+    // }
+    
     setTimeout(function(){
-      for (i=0;i<z.length;i++){
-      z[i][0][reactkey].onMouseLeave();
-      }
+      // for (i=0;i<z.length;i++){
+      // z[i][0][reactkey].onMouseLeave();
+      // }
+    btn[0][btnreactkey].onMouseLeave();
     },100);
 
 
   },600);
-
-
 
 };
