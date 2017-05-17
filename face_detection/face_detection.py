@@ -33,7 +33,7 @@ while(True):
             #for (ex,ey,ew,eh) in eyes:
             #    cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)
             cut = cv2.resize(roi_gray, (350, 350))
-            print(type(fisherFace.predict(cut)))
+            print(fisherFace.predict(cut))
 
 
 
