@@ -18,8 +18,8 @@ import subprocess
 import sys
 import threading
 from loader import Screen
-from select import select
-from pprint import pprint
+import leapmotion as lm
+import Leap
 
 
 def begin():
@@ -55,8 +55,8 @@ def begin():
     tab = chrome.tabs[0]
     tab.set_url("https://www.facebook.com/")
 
-    print "waiting 5 secs"
-    time.sleep(8)
+    print "waiting 15 secs"
+    time.sleep(20)
 
     # while True:
     #     tab = chrome.tabs[0]
@@ -70,6 +70,8 @@ def begin():
 
     print "Please enable JQuery injection and then press OK!"
     tab.evaluate('window.confirm("Please inject jQuery and then press OK");')
+
+    time.sleep(5)
 
 
     try:
@@ -85,6 +87,7 @@ def begin():
         raise SystemExit
 
     time.sleep(1)
+    
 
     json_string = isloaded
     obj = json.loads(json_string)
@@ -106,6 +109,17 @@ def begin():
 
     else:
         print "Functions properly injected!"
+        print "Starting leapmotion"
+        listener = lm.SampleListener()
+        controller = Leap.Controller()
+        controller.config.set("background_app_mode", 2)
+        controller.config.save()
+        controller.set_policy(Leap.Controller.POLICY_BACKGROUND_FRAMES)
+        # controller.set_policy(Leap.Controller.POLICY_OPTIMIZE_HMD)
+
+        # Have the sample listener receive events from the controller
+        controller.add_listener(listener)
+        
         jqueryIsInjected = True
         tab.evaluate("onPageLoaded();")
 
@@ -118,50 +132,83 @@ def begin():
     lower = 0
     upper = 1
 
+    swipecooldown = 10
+    gesturecooldown = 50
+
     while(jqueryIsInjected == True):
         try:
-            print chrome
-            tab.evaluate("showSelected()")
-            # tab.evaluate("clickReaction('grr')")
-            # counterval = json.loads(counter)["result"]["result"]["value"]
-            # print "Amount of like buttons avaiable " + str(counterval)
-            # Capture frame-by-frame
-            # print("New frame")
+        # tab.evaluate("showSelected()")
+        # tab.evaluate("clickReaction('grr')")
+        # counterval = json.loads(counter)["result"]["result"]["value"]
+        # print "Amount of like buttons avaiable " + str(counterval)
+        # Capture frame-by-frame
+        # print("New frame")
 
             ret, frame = cap.read()
+            
+            if listener.getGesture() == 'swipe_up' and swipecooldown == 0:
+                print 'Swiping up'
+                cmd = """
+                osascript -e 'tell application "System Events" to keystroke "j"' 
+                """
+                os.system(cmd)
+                # tab.evaluate("$('html, body').animate({scrollTop: '+=500px'}, 1000);")
+                listener.resetGesture()
+                swipecooldown = 5
+                gesturecooldown += 5
+            elif listener.getGesture() == 'swipe_down' and swipecooldown == 0:
+                print 'Swiping down'
+                # tab.evaluate("$('html, body').animate({scrollTop: '-=500px'}, 1000);")
+                cmd = """
+                osascript -e 'tell application "System Events" to keystroke "k"' 
+                """
+                os.system(cmd)
+                listener.resetGesture()
+                swipecooldown = 5
+                gesturecooldown += 5
+            elif listener.getGesture() == 'heart' and gesturecooldown == 0:
+                print 'Clicking loved it'
+                tab.evaluate('clickReaction("amei")')
+                listener.resetGesture()
+                gesturecooldown = 40
+            elif listener.getGesture() == 'thumbsup' and gesturecooldown == 0:
+                print 'Clicking thumbs up'
+                tab.evaluate('clickReaction("curtir")')
+                listener.resetGesture()
+                gesturecooldown = 40
 
-            sct.get_pixels(mon)
-            img = Image.frombytes('RGB', (sct.width, sct.height), sct.image)
-            imgRGB = cv2.cvtColor(np.array(img), cv2.COLOR_BGR2RGB)
-            # cv2.imshow('test', np.array(imgRGB))
+            swipecooldown -= 1
+            gesturecooldown -= 1
+            
+            if swipecooldown <= 0:
+                swipecooldown = 0
+            if gesturecooldown <= 0:
+                gesturecooldown = 0
 
-            # tab.evaluate("clickReaction(0,'haha')")
+            # print 'Cooldown:', cooldown
+
             # Display the resulting frame
             cv2.imshow('Camera',frame)
             # print("No circles were found")
-            time.sleep(0.25)
 
-            if cv2.waitKey(50) & 0xFF == ord('q'):
+            if cv2.waitKey(25) & 0xFF == ord('q'):
                 break
 
         except:
+            controller.remove_listener(listener)
             screen.onScriptStopped()
             print "Chrome is unresponsive or has been closed"
             screen.updateText("Chrome is unresponsive \n or has been closed\n Please try again")
             cap.release()
             cv2.destroyAllWindows()
             jqueryIsInjected = False
+            break
 
     # When everything done, release the capture
+    controller.remove_listener(listener)
     cap.release()
     cv2.destroyAllWindows()
-
-mainthread = threading.Thread(target=begin)
 
 screen = Screen()
 screen.setFn(begin)
 screen.start()
-
-# mainthread.start()
-# mainThread = Thread(target=screen.start)
-# mainThread.start()
