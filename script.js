@@ -9,7 +9,10 @@ function returnObj(a) {
        if ($(a[i]).isVisible()){
          c = [];
          c[0] = a[i];
-         b.push(c);
+         if (a[i].tabIndex == '0'){
+            b.push(a[i]);
+         }
+        //  b.push(a[i]);
        }
  }
     return b;
@@ -41,6 +44,8 @@ function showSelected(){
   visible_count = 0;
   y = returnObj($('._4-u2.mbm._4mrt._5v3q._4-u8'));
 
+  
+
   // $(y).removeClass("selected");
 
   $(y[1]).addClass("selected");
@@ -56,23 +61,25 @@ function showSelected(){
 }
 
 function clickReaction(reaction){
-  z = returnObj($('a.UFILikeLink._4x9-._4x9_:visible'));
+  // z = returnObj($('a.UFILikeLink._4x9-._4x9_:visible'));
   btns = [];
 
-  y = returnObj($('._4-u2.mbm._4mrt._5v3q._4-u8'));
+  y = $("div._5jmm._5pat._3lb4.o_dxf8lagm[tabIndex='0']:visible").children()[1]
+
+  // y = returnObj($('._4-u2.mbm._4mrt._5v3q._4-u8'));
 
   // $(y).removeClass("selected");
 
-  $(y[1]).addClass("selected");
+  // $(y[1]).addClass("selected");
 
-  try{
-    $(y[0]).removeClass("selected");
-    $(y[2]).removeClass("selected");
-  } catch(err){
-    console.log("Error when catching post index");
-  }
+  // try{
+  //   $(y[0]).removeClass("selected");
+  //   $(y[2]).removeClass("selected");
+  // } catch(err){
+  //   console.log("Error when catching post index");
+  // }
 
-  btn =  $(y[1]).find(".UFILikeLink._4x9-._4x9_");
+  btn =  $(y).find(".UFILikeLink._4x9-._4x9_");
   btnreactkey = Object.keys(btn[0])[1];
   // console.log(btn);
   // console.log(btnreactkey);
@@ -91,7 +98,9 @@ function clickReaction(reaction){
 
   setTimeout(function(){
 
-    spanlist = returnObj($("._iuw:visible"));
+    // spanlist = returnObj($("._iuw:visible"));
+    spanlist = $("._iuw:visible")
+    spanlist = spanlist.slice(spanlist.length-6,spanlist.length)
     // console.log(spanlist);
     // for (i=0;i<spanlist.length;i++){
 
@@ -131,23 +140,21 @@ function clickReaction(reaction){
       ri = 0;
     } else if (reaction == "amei"){
       ri = 1;
-    } else if (reaction == "gratidao"){
-      ri = 2;
     } else if (reaction == "haha"){
-      ri = 3;
+      ri = 2;
     } else if (reaction == "uau"){
-      ri = 4;
+      ri = 3;
     } else if (reaction == "triste"){
-      ri = 5;
+      ri = 4;
     } else if (reaction == "grr"){
-      ri = 6;
+      ri = 5;
     } else {
       console.log("Invalid reaction");
     }
     console.log("Clicking on the reaction "+reaction );
 
     // if ( btn[0].getAttribute("aria-pressed") == 'false'){
-    spanlist[ri][0].click();
+    spanlist[ri].click();
     // }
     
     setTimeout(function(){
