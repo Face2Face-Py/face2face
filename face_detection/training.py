@@ -14,8 +14,8 @@ data = {}
 def get_files(emotion): #Define function to get file list, randomly shuffle it and split 80/20
     files = glob.glob("dataset/%s/*" %emotion)
     random.shuffle(files)
-    training = files[:int(len(files)*0.8)] #get first 80% of file list
-    prediction = files[-int(len(files)*0.2):] #get last 20% of file list
+    training = files[:int(len(files)*0.5)] #get first 80% of file list
+    prediction = files[-int(len(files)*0.5):] #get last 20% of file list
     return training, prediction
 
 def make_sets():
@@ -43,6 +43,8 @@ def make_sets():
 def run_recognizer():
     training_data, training_labels, prediction_data, prediction_labels = make_sets()
     
+    confusion = np.zeros((8,8))
+
     print "training fisher face classifier"
     print "size of training set is:", len(training_labels), "images"
     fishface.train(training_data, np.asarray(training_labels))
@@ -57,10 +59,16 @@ def run_recognizer():
         if pred == prediction_labels[cnt]:
             correct += 1
             cnt += 1
+            confusion[pred][pred]+=1
         else:
+            confusion[prediction_labels[cnt]][pred]+=1
             incorrect += 1
             cnt += 1
+
+    print(confusion)
+
     return ((100*correct)/(correct + incorrect))
+
 
 correct = run_recognizer()
 
@@ -75,5 +83,6 @@ fishface.save('training')
     # correct = run_recognizer()
     # print "got", correct, "percent correct!"
     # metascore.append(correct)
+
 
 print "\n\nend score:", correct, "percent correct!"
