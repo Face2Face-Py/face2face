@@ -7,7 +7,7 @@
 ################################################################################
 
 import Leap, sys, thread, time, math
-from Leap import , SwipeGesture
+from Leap import CircleGesture, SwipeGesture
 
 class SampleListener(Leap.Listener):
     finger_names = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky']
@@ -63,7 +63,7 @@ class SampleListener(Leap.Listener):
             # print self.thumbsupcounter, self.circlemotioncounter, self.swipeupcounter, self.swipedowncounter
             self.resetCounters()
             return None
-            
+
         pointable = frame.pointables.frontmost
         speed = pointable.tip_velocity
         if speed[2] > 800:
@@ -84,14 +84,14 @@ class SampleListener(Leap.Listener):
             # print "SWIPING DOWN"
             self.gesture='swipe_down'
             self.resetCounters()
-        
+
         # print "UP",self.swipedowncounter
         # print "DOWN",self.swipeupcounter
 
         hc = []
         # Get hands
         for hand in frame.hands:
-            
+
             hc.append([hand.id,hand.palm_position[0],hand.palm_position[2]])
 
             handType = "Left hand" if hand.is_left else "Right hand"
@@ -111,7 +111,7 @@ class SampleListener(Leap.Listener):
             fingerlist = {}
             for finger in hand.fingers:
                 # if self.finger_names[finger.type] != 'Thumb':
-                fingerlist[self.finger_names[finger.type]] = finger.is_extended 
+                fingerlist[self.finger_names[finger.type]] = finger.is_extended
                 # print "    %s finger, id: %d, length: %fmm, width: %fmm" % (
 
                 if finger.is_extended == True:
@@ -124,7 +124,7 @@ class SampleListener(Leap.Listener):
                     #     bone.prev_joint,
                     #     bone.next_joint,
                     #     bone.direction)
-            
+
             if extended_count == 0 or extended_count == 1:
                 self.thumbsupcounter += 1
             else:
@@ -137,16 +137,16 @@ class SampleListener(Leap.Listener):
                 self.gesture = 'thumbsup'
                 self.resetCounters()
 
-        # print fingerlist 
+        # print fingerlist
         # if fingerlist["Pinky"] == False and fingerlist["Index"] == False and fingerlist["Ring"] == False and fingerlist["Pinky"] == False and fingerlist["Thumb"] == True:
         #     print "thumbs up"
         # else:
         #     print 'no thumbs up'
 
-        
+
         # for finger in fingerlist:
         #     print self.finger_names[finger.type]," is extended", finger.is_extended
-        
+
 
         # Get gestures
         try:
@@ -161,7 +161,7 @@ class SampleListener(Leap.Listener):
 
                 if self.heartcounter == 50:
                     self.gesture = 'heart'
-                    self.resetCounters()      
+                    self.resetCounters()
         except:
             pass
 
@@ -201,4 +201,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    

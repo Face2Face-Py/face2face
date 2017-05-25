@@ -5,11 +5,13 @@ import time
 import numpy as np
 import pickle
 
-emotions = ["neutral", "anger", "contempt", "disgust", "fear", "happy", "sadness", "surprise"] #Define emotion order
 
 cap = cv2.VideoCapture(0)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
 face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+cv2.setUseOptimized(True)
 
 font = cv2.FONT_HERSHEY_SIMPLEX
 lower = 0
@@ -29,7 +31,7 @@ while(True):
     rects = []
 
     for face in faces:
-        dici = {}  
+        dici = {}
         id += 1
 
         x,y,w,h = face[0],face[1],face[2],face[3]
@@ -56,11 +58,11 @@ while(True):
         cv2.rectangle(frame,(x,y),(x+w,y+h),(255,0,0),2)
         roi_gray = gray[y:y+h, x:x+w]
         roi_color = frame[y:y+h, x:x+w]
- 
+
         cut = cv2.resize(roi_gray, (350, 350))
         emotion_name = fisherFace.predict(cut)[0]
         cv2.putText(frame,str(emotions[emotion_name]),(200,100), font, 2,(255,255,255),2, cv2.LINE_AA)
-        
+
     except:
         pass
 
