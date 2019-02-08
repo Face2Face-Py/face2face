@@ -6,7 +6,7 @@
 # between Leap Motion and you, your company or other organization.             #
 ################################################################################
 
-import Leap, sys, thread, time, math
+import Leap, sys, time, math, thread
 from Leap import CircleGesture, SwipeGesture
 
 class SampleListener(Leap.Listener):
@@ -131,7 +131,7 @@ class SampleListener(Leap.Listener):
                 # print "NO thumbs up detected"
                 self.thumbsupcounter = 0
 
-            if self.thumbsupcounter == 66:
+            if self.thumbsupcounter == 45:
                 # print 'Thumbs up detected!'
                 # self.resetCounters()
                 self.gesture = 'thumbsup'
